@@ -167,26 +167,26 @@ async register(
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    // Check if account is locked (BR-EMP-AUTH-002)
-    if (user.isAccountLocked()) {
-      const lockMinutes = this.configService.get<number>(
-        'LOCKOUT_DURATION_MINUTES',
-        30,
-      );
-      await this.auditService.log({
-        action: AuditAction.LOGIN_FAILED,
-        userId: user.id,
-        userEmail: user.email,
-        organizationId: user.organizationId,
-        ipAddress,
-        userAgent,
-        description: 'Login attempt on locked account',
-        success: false,
-      });
-      throw new UnauthorizedException(
-        `Account is locked due to multiple failed attempts. Try again after ${lockMinutes} minutes or contact support.`,
-      );
-    }
+    // // Check if account is locked (BR-EMP-AUTH-002)
+    // if (user.isAccountLocked()) {
+    //   const lockMinutes = this.configService.get<number>(
+    //     'LOCKOUT_DURATION_MINUTES',
+    //     30,
+    //   );
+    //   await this.auditService.log({
+    //     action: AuditAction.LOGIN_FAILED,
+    //     userId: user.id,
+    //     userEmail: user.email,
+    //     organizationId: user.organizationId,
+    //     ipAddress,
+    //     userAgent,
+    //     description: 'Login attempt on locked account',
+    //     success: false,
+    //   });
+    //   throw new UnauthorizedException(
+    //     `Account is locked due to multiple failed attempts. Try again after ${lockMinutes} minutes or contact support.`,
+    //   );
+    // }
 
     // Validate password
     const isPasswordValid = await user.validatePassword(dto.password);

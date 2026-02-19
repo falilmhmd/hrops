@@ -56,16 +56,15 @@ export class AuthController {
   async register(@Body() dto: RegisterDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
-    const result = await this.authService.register(dto, ipAddress, userAgent);
-    return new ResponseDto({
-      success: true,
-      statusCode: HttpStatus.CREATED,
-      message: 'Registration successful. Verification email sent.',
-      data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/register',
-    });
+    return await this.authService.register(dto, ipAddress, userAgent);
+    // return {
+    //   success: true,
+    //   statusCode: HttpStatus.CREATED,
+    //   message: 'Registration successful. Verification email sent.',
+    //   data: result,
+    // };
   }
+
 
   // ─────────────────────────────────────────────────────────────────────────────
   // POST /auth/login
@@ -84,15 +83,13 @@ export class AuthController {
   async login(@Body() dto: LoginDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
-    const result = await this.authService.login(dto, ipAddress, userAgent);
-    return new ResponseDto({
-      success: true,
-      statusCode: HttpStatus.OK,
-      message: 'Login successful. Returns JWT tokens.',
-      data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/login',
-    });
+    return await this.authService.login(dto, ipAddress, userAgent);
+    // return {
+    //   success: true,
+    //   statusCode: HttpStatus.OK,
+    //   message: 'Login successful. Returns JWT tokens.',
+    //   data: result,
+    // };
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -112,14 +109,12 @@ export class AuthController {
   async verifyEmail(@Query('token') token: string, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const result = await this.authService.verifyEmail(token, ipAddress);
-    return new ResponseDto({
+    return {
       success: true,
       statusCode: HttpStatus.OK,
       message: 'Email verified successfully.',
       data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/verify-email',
-    });
+    };
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -135,14 +130,12 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Verification email sent (if applicable).' })
   async resendVerification(@Body('email') email: string) {
     const result = await this.authService.resendVerificationEmail(email);
-    return new ResponseDto({
+    return {
       success: true,
       statusCode: HttpStatus.OK,
       message: 'Verification email sent (if applicable).',
       data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/resend-verification',
-    });
+    };
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -159,14 +152,12 @@ export class AuthController {
   async forgotPassword(@Body() dto: ForgotPasswordDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const result = await this.authService.forgotPassword(dto, ipAddress);
-    return new ResponseDto({
+    return {
       success: true,
       statusCode: HttpStatus.OK,
       message: 'Reset email sent (if email exists).',
       data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/forgot-password',
-    });
+    };
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -184,14 +175,12 @@ export class AuthController {
   async resetPassword(@Body() dto: ResetPasswordDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const result = await this.authService.resetPassword(dto, ipAddress);
-    return new ResponseDto({
+    return {
       success: true,
       statusCode: HttpStatus.OK,
       message: 'Password reset successfully.',
       data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/reset-password',
-    });
+    };
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -213,14 +202,12 @@ export class AuthController {
   ) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const result = await this.authService.refreshTokens(userId, refreshToken, ipAddress);
-    return new ResponseDto({
+    return {
       success: true,
       statusCode: HttpStatus.OK,
       message: 'Tokens refreshed.',
       data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/refresh',
-    });
+    };
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -239,15 +226,13 @@ export class AuthController {
   async logout(@CurrentUser() user: User, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
-    const result = await this.authService.logout(user.id, ipAddress, userAgent);
-    return new ResponseDto({
-      success: true,
-      statusCode: HttpStatus.OK,
-      message: 'Logged out successfully.',
-      data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/logout',
-    });
+    return await this.authService.logout(user.id, ipAddress, userAgent);
+    // return {
+    //   success: true,
+    //   statusCode: HttpStatus.OK,
+    //   message: 'Logged out successfully.',
+    //   data: result,
+    // };
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -264,14 +249,6 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User profile returned.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getProfile(@CurrentUser() user: User) {
-    const result = await this.authService.getProfile(user.id);
-    return new ResponseDto({
-      success: true,
-      statusCode: HttpStatus.OK,
-      message: 'User profile returned.',
-      data: result,
-      timestamp: new Date().toISOString(),
-      path: '/auth/me',
-    });
+    return await this.authService.getProfile(user.id);
   }
 }
