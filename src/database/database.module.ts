@@ -14,7 +14,7 @@ import { AuditLog } from './entities/audit-log.entity';
         host: configService.get<string>('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 5432),
         username: configService.get<string>('DB_USERNAME', 'postgres'),
-        password: configService.get<string>('DB_PASSWORD', 'postgres123'),
+        password: configService.get<string>('DB_PASSWORD', 'postgres'),
         database: configService.get<string>('DB_NAME', 'hrms_db'),
         entities: [User, Organization, AuditLog],
         synchronize: configService.get<string>('NODE_ENV') !== 'production',

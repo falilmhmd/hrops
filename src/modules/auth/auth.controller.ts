@@ -18,6 +18,9 @@ import {
 } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { ResponseDto } from '../../common/dto/response.dto';
+import { ErrorResponseDto } from '../../common/dto/error-response.dto';
+import { BusinessException } from '../../common/exceptions/business.exception';
 
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -33,7 +36,7 @@ import { User } from '../../database/entities/user.entity';
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   // ─────────────────────────────────────────────────────────────────────────────
   // POST /auth/register
@@ -53,7 +56,15 @@ export class AuthController {
   async register(@Body() dto: RegisterDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
-    return this.authService.register(dto, ipAddress, userAgent);
+    const result = await this.authService.register(dto, ipAddress, userAgent);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.CREATED,
+      message: 'Registration successful. Verification email sent.',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/register',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -73,7 +84,15 @@ export class AuthController {
   async login(@Body() dto: LoginDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
-    return this.authService.login(dto, ipAddress, userAgent);
+    const result = await this.authService.login(dto, ipAddress, userAgent);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Login successful. Returns JWT tokens.',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/login',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -92,7 +111,15 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Invalid or expired token.' })
   async verifyEmail(@Query('token') token: string, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
-    return this.authService.verifyEmail(token, ipAddress);
+    const result = await this.authService.verifyEmail(token, ipAddress);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Email verified successfully.',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/verify-email',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -107,7 +134,15 @@ export class AuthController {
   })
   @ApiResponse({ status: 200, description: 'Verification email sent (if applicable).' })
   async resendVerification(@Body('email') email: string) {
-    return this.authService.resendVerificationEmail(email);
+    const result = await this.authService.resendVerificationEmail(email);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Verification email sent (if applicable).',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/resend-verification',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -123,7 +158,15 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Reset email sent (if email exists).' })
   async forgotPassword(@Body() dto: ForgotPasswordDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
-    return this.authService.forgotPassword(dto, ipAddress);
+    const result = await this.authService.forgotPassword(dto, ipAddress);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Reset email sent (if email exists).',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/forgot-password',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -140,7 +183,15 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Invalid or expired token.' })
   async resetPassword(@Body() dto: ResetPasswordDto, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
-    return this.authService.resetPassword(dto, ipAddress);
+    const result = await this.authService.resetPassword(dto, ipAddress);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Password reset successfully.',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/reset-password',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -161,7 +212,15 @@ export class AuthController {
     @Req() req: Request,
   ) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
-    return this.authService.refreshTokens(userId, refreshToken, ipAddress);
+    const result = await this.authService.refreshTokens(userId, refreshToken, ipAddress);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Tokens refreshed.',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/refresh',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -180,7 +239,15 @@ export class AuthController {
   async logout(@CurrentUser() user: User, @Req() req: Request) {
     const ipAddress = req.ip || req.socket?.remoteAddress;
     const userAgent = req.headers['user-agent'];
-    return this.authService.logout(user.id, ipAddress, userAgent);
+    const result = await this.authService.logout(user.id, ipAddress, userAgent);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Logged out successfully.',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/logout',
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -197,6 +264,14 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User profile returned.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getProfile(@CurrentUser() user: User) {
-    return this.authService.getProfile(user.id);
+    const result = await this.authService.getProfile(user.id);
+    return new ResponseDto({
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'User profile returned.',
+      data: result,
+      timestamp: new Date().toISOString(),
+      path: '/auth/me',
+    });
   }
 }
