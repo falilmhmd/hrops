@@ -309,10 +309,61 @@ Admin can:
 ---
 
 #### FR-ADMIN-HOLIDAY-001: Holiday Calendar
-Admin can:
-- Add public holidays
-- Add optional holidays
-- Assign by location
+**Priority:** Must Have (M)
+
+**User Story:**
+> As an HR Admin, I want to manage the holiday calendar, so that employees can view holidays and plan their leaves accordingly.
+
+**Holiday Types:**
+| Type | Description |
+|------|-------------|
+| PUBLIC | Public holidays (mandatory for all employees) |
+| OPTIONAL | Optional holidays (employees can choose) |
+
+**Holiday Fields:**
+| Field | Type | Required |
+|-------|------|----------|
+| Name | Text | Yes |
+| Description | Text | No |
+| Date | Date | Yes |
+| Type | Select (Public/Optional) | No (default: Public) |
+| Location | Text | No |
+| Locations | Multi-Select | No |
+| Is Recurring | Boolean | No (default: true) |
+| Organization | Select | No |
+
+**Acceptance Criteria:**
+
+Given I am logged in as HR Admin  
+When I create a holiday with valid details  
+Then system should:
+- Create holiday record
+- Associate with location(s) if specified
+- Make visible to employees in calendar
+
+Given I filter holidays by location  
+Then system should display holidays for that location
+
+**Business Rules:**
+| Rule ID | Description |
+|---------|-------------|
+| BR-HOLIDAY-001 | Holiday name must be unique per date |
+| BR-HOLIDAY-002 | Holidays can be assigned by location |
+| BR-HOLIDAY-003 | Soft delete only (data retained) |
+| BR-HOLIDAY-004 | Recurring holidays repeat yearly |
+
+**API Endpoints:**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/holidays` | Create a new holiday |
+| GET | `/holidays` | Get all holidays (with filters) |
+| GET | `/holidays/:id` | Get holiday by ID |
+| PUT | `/holidays/:id` | Update holiday |
+| DELETE | `/holidays/:id` | Soft delete holiday |
+| GET | `/holidays/public/list` | Get all public holidays |
+| GET | `/holidays/optional/list` | Get all optional holidays |
+| GET | `/holidays/location/:location` | Get holidays by location |
+| GET | `/holidays/date-range/list` | Get holidays within date range |
 
 ---
 

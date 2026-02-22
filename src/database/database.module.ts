@@ -4,6 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './entities/user.entity';
 import { Organization } from './entities/organization.entity';
 import { AuditLog } from './entities/audit-log.entity';
+import { LeaveType } from './entities/leave-type.entity';
+import { LeaveBalance } from './entities/leave-balance.entity';
+import { Holiday } from './entities/holiday.entity';
 
 @Module({
   imports: [
@@ -16,7 +19,7 @@ import { AuditLog } from './entities/audit-log.entity';
         username: configService.get<string>('DB_USERNAME', 'postgres'),
         password: configService.get<string>('DB_PASSWORD', 'postgres'),
         database: configService.get<string>('DB_NAME', 'hrms_db'),
-        entities: [User, Organization, AuditLog],
+        entities: [User, Organization, AuditLog, LeaveType, LeaveBalance, Holiday],
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
         logging: configService.get<string>('NODE_ENV') === 'development',
         ssl:
@@ -28,4 +31,4 @@ import { AuditLog } from './entities/audit-log.entity';
     }),
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }

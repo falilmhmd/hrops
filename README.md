@@ -65,6 +65,54 @@ src/
 └── main.ts                 # Application entry point
 ```
 
+## Holiday Calendar
+
+### Holiday Types
+
+| Type | Description |
+|------|-------------|
+| PUBLIC | Public holidays (mandatory for all employees) |
+| OPTIONAL | Optional holidays (employees can choose) |
+
+### API Endpoints
+
+#### Holiday Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/holidays` | Create a new holiday |
+| GET | `/holidays` | Get all holidays (with filters) |
+| GET | `/holidays/:id` | Get holiday by ID |
+| PUT | `/holidays/:id` | Update holiday |
+| DELETE | `/holidays/:id` | Soft delete holiday |
+| GET | `/holidays/public/list` | Get all public holidays |
+| GET | `/holidays/optional/list` | Get all optional holidays |
+| GET | `/holidays/location/:location` | Get holidays by location |
+| GET | `/holidays/date-range/list` | Get holidays within date range |
+
+### Holiday Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| name | String | Yes | Name of the holiday |
+| description | String | No | Description of the holiday |
+| date | Date | Yes | Date of the holiday |
+| type | Enum | No | PUBLIC or OPTIONAL (default: PUBLIC) |
+| location | String | No | Single location for the holiday |
+| locations | Array | No | Multiple locations for the holiday |
+| isRecurring | Boolean | No | Whether holiday recurs yearly (default: true) |
+| organizationId | UUID | No | Organization ID for multi-tenant |
+
+### Business Rules
+
+| Rule ID | Description |
+|---------|-------------|
+| BR-HOLIDAY-001 | Holiday name must be unique per date |
+| BR-HOLIDAY-002 | Holidays can be assigned by location |
+| BR-HOLIDAY-003 | Soft delete only (data retained) |
+
+---
+
 ## Employee Management
 
 ### Employee Add Screen Structure

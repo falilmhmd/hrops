@@ -9,6 +9,8 @@ import { MailModule } from './modules/mail/mail.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { ExampleModule } from './modules/example/example.module';
 import { EmployeeModule } from './modules/employee/employee.module';
+import { LeaveConfigModule } from './modules/leave-config/leave-config.module';
+import { HolidayModule } from './modules/holiday/holiday.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -41,6 +43,8 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
     AuthModule,
     ExampleModule,
     EmployeeModule,
+    LeaveConfigModule,
+    HolidayModule,
   ],
   providers: [
     // Apply JWT guard globally (NFR-ADMIN-001: RBAC at API level)
