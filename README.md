@@ -1,37 +1,21 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# HRMS Backend - Human Resource Management System
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A multi-tenant, role-based Human Resource Management System built with **NestJS** and **PostgreSQL**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Tech Stack
 
-## Description
+- **Backend:** NestJS (Node.js)
+- **Database:** PostgreSQL with TypeORM
+- **Authentication:** JWT + OAuth (Microsoft/Slack)
+- **Authorization:** Role-Based Access Control (RBAC)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Project Setup
 
 ```bash
 $ npm install
 ```
 
-## Compile and run the project
+## Compile and Run
 
 ```bash
 # development
@@ -44,7 +28,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Run tests
+## Run Tests
 
 ```bash
 # unit tests
@@ -57,41 +41,141 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
+## Project Structure
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```
+src/
+├── common/                 # Shared utilities, guards, interceptors
+│   ├── decorators/         # Custom decorators
+│   ├── dto/                # Common DTOs
+│   ├── enums/              # Enums (Role, AuditAction)
+│   ├── exceptions/         # Custom exceptions
+│   ├── filters/            # Exception filters
+│   ├── guards/             # Auth guards
+│   ├── interceptors/       # Response interceptors
+│   └── pipes/              # Validation pipes
+├── database/               # Database configuration
+│   └── entities/           # TypeORM entities
+├── modules/                # Feature modules
+│   ├── audit/              # Audit logging
+│   ├── auth/               # Authentication
+│   ├── employee/           # Employee management
+│   ├── mail/               # Email services
+│   └── example/            # Example module
+└── main.ts                 # Application entry point
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Employee Management
 
-## Resources
+### Employee Add Screen Structure
 
-Check out a few resources that may come in handy when working with NestJS:
+The employee creation form is organized into 4 sections:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+#### Section 1: Personal Information
+| Field | Type | Required |
+|-------|------|----------|
+| First Name | Text | Yes |
+| Last Name | Text | Yes |
+| Mobile Number | Text | No |
+| Email Address | Email | Yes |
+| Date of Birth | Date | No |
+| Marital Status | Select | No |
+| Gender | Select | No |
+| Nationality | Text | No |
+| City | Text | No |
+| State | Text | No |
+| Zipcode | Text | No |
 
-## Support
+#### Section 2: Professional Information
+| Field | Type | Required |
+|-------|------|----------|
+| Employee ID | Auto/Manual | No |
+| Username | Text | No |
+| Employee Type | Select | No |
+| Official Email Address | Email | No |
+| Department | Select | No |
+| Designation | Text | No |
+| Working Days | Text | No |
+| Joining Date | Date | No |
+| Office Location | Text | No |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### Section 3: Documents
+| Field | Type | Required |
+|-------|------|----------|
+| Appointment Letter | File Upload | No |
+| Salary Slips | File Upload | No |
+| Relieving Letter | File Upload | No |
+| Experience Letter | File Upload | No |
+| Certificate Letter | File Upload | No |
 
-## Stay in touch
+#### Section 4: Account Access
+| Field | Type | Required |
+|-------|------|----------|
+| Email Address | Email | Yes (auto-filled) |
+| Slack ID | Text | No |
+| Skype ID | Text | No |
+| GitHub ID | Text | No |
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### API Endpoints
+
+#### Employee Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/employees` | Create a new employee |
+| GET | `/employees` | Get all employees (with filters) |
+| GET | `/employees/:id` | Get employee by ID |
+| PATCH | `/employees/:id` | Update employee |
+| DELETE | `/employees/:id` | Soft delete employee |
+
+### Business Rules
+
+| Rule ID | Description |
+|---------|-------------|
+| BR-EMP-ADMIN-001 | Email must be unique |
+| BR-EMP-ADMIN-002 | Employee must belong to one department |
+| BR-EMP-ADMIN-003 | Hierarchy must not create circular reporting |
+| BR-EMP-ADMIN-004 | Soft delete only (data retained) |
+| BR-EMP-ADMIN-005 | Deleted employees cannot login |
+| BR-EMP-ADMIN-006 | Historical attendance & payroll data preserved |
+| BR-EMP-ADMIN-007 | Documents can be uploaded as files or URLs |
+| BR-EMP-ADMIN-008 | Official email can be different from personal email |
+
+## Roles
+
+| Role | Description |
+|------|-------------|
+| SUPER_ADMIN | Platform-level administrator |
+| HR_ADMIN | Organization-level administrator |
+| REPORTING_MANAGER | Limited admin role |
+| EMPLOYEE | Standard employee |
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+```env
+# Database
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USERNAME=postgres
+DATABASE_PASSWORD=password
+DATABASE_NAME=hrms
+
+# JWT
+JWT_SECRET=your-secret-key
+JWT_EXPIRATION=7d
+
+# Email
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=user@example.com
+SMTP_PASS=password
+```
+
+## Documentation
+
+For detailed requirements, see [HRMS_REQUIREMENTS.md](./HRMS_REQUIREMENTS.md)
 
 ## License
 

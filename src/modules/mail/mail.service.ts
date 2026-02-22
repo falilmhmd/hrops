@@ -209,4 +209,68 @@ export class MailService {
       this.logger.error(`Failed to send welcome email to ${email}`, error);
     }
   }
+
+  async sendInvitationEmail(
+    email: string,
+    name: string,
+    tempPassword: string,
+  ): Promise<void> {
+    const frontendUrl = this.configService.get<string>(
+      'FRONTEND_URL',
+      'http://localhost:4200',
+    );
+
+    const mailOptions = {
+      from: `"HRMS" <${this.configService.get<string>('MAIL_FROM', 'noreply@hrms.com')}>`,
+      to: email,
+      subject: 'You Have Been Invited to HRMS',
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .header { background: #059669; color: white; padding: 30px; text-align: center; }
+            .header h1 { margin: 0; font-size: 24px; }
+            .body { padding: 30px; }
+            .body p { color: #555; line-height: 1.6; }
+            .credentials { background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; padding: 16px; margin: 20px 0; }
+            .btn { display: inline-block; background: #059669; color: white; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; margin: 20px 0; }
+            .footer { background: #f8f8f8; padding: 20px; text-align: center; color: #999; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🎉 You Have Been Invited to HRMS!</h1>
+            </div>
+            <div class="body">
+              <h2>Hello, ${name}!</h2>
+              <p>You have been invited to join the HRMS platform. Here are your login credentials:</p>
+              <div class="credentials">
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Temporary Password:</strong> ${tempPassword}</p>
+              </div>
+              <p>Please log in and change your password immediately.</p>
+              <a href="${frontendUrl}/auth/login" class="btn">Login to HRMS</a>
+              <p style="color: #DC2626;"><strong>⚠️ For security, please change your password after first login.</strong></p>
+            </div>
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} HRMS Platform. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      this.logger.log(`Invitation email sent to ${email}`);
+    } catch (error) {
+      this.logger.error(`Failed to send invitation email to ${email}`, error);
+    }
+  }
 }

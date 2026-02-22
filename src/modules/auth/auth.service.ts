@@ -43,7 +43,7 @@ export class AuthService {
     private configService: ConfigService,
     private auditService: AuditService,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   // ─────────────────────────────────────────────────────────────────────────────
   // FR-ADMIN-AUTH-001: Admin Sign Up
@@ -51,7 +51,7 @@ export class AuthService {
   // BR-ADMIN-002: Email must be unique across platforms
   // BR-ADMIN-003: Email verification mandatory before login
   // ─────────────────────────────────────────────────────────────────────────────
-async register(
+  async register(
     dto: RegisterDto,
     ipAddress?: string,
     userAgent?: string,
@@ -92,7 +92,7 @@ async register(
       firstName: dto.firstName,
       lastName: dto.lastName,
       email: dto.email.toLowerCase(),
-      phone: dto.phone,
+      mobileNumber: dto.phone,
       password: dto.password,
       role: Role.HR_ADMIN,
       organizationId: savedOrg.id,

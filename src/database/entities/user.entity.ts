@@ -19,21 +19,99 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
-  employeeId: string;
-
+  // ==================== PERSONAL INFORMATION ====================
   @Column()
   firstName: string;
 
   @Column()
   lastName: string;
 
+  @Column({ nullable: true })
+  mobileNumber: string;
+
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
-  phone: string;
+  @Column({ nullable: true, type: 'date' })
+  dateOfBirth: Date;
 
+  @Column({ nullable: true })
+  maritalStatus: string;
+
+  @Column({ nullable: true })
+  gender: string;
+
+  @Column({ nullable: true })
+  nationality: string;
+
+  // Address fields
+  @Column({ nullable: true })
+  city: string;
+
+  @Column({ nullable: true })
+  state: string;
+
+  @Column({ nullable: true })
+  zipcode: string;
+
+  // ==================== PROFESSIONAL INFORMATION ====================
+  @Column({ nullable: true })
+  employeeId: string;
+
+  @Column({ nullable: true })
+  username: string;
+
+  @Column({ nullable: true })
+  employmentType: string;
+
+  @Column({ nullable: true })
+  officialEmail: string;
+
+  @Column({ nullable: true })
+  department: string;
+
+  @Column({ nullable: true })
+  designation: string;
+
+  @Column({ nullable: true })
+  workingDays: string;
+
+  @Column({ nullable: true, type: 'date' })
+  dateOfJoining: Date;
+
+  @Column({ nullable: true })
+  officeLocation: string;
+
+  @Column({ nullable: true })
+  reportingManagerId: string;
+
+  // ==================== DOCUMENTS ====================
+  @Column({ nullable: true, type: 'text' })
+  appointmentLetter: string;
+
+  @Column({ nullable: true, type: 'text' })
+  salarySlips: string;
+
+  @Column({ nullable: true, type: 'text' })
+  relievingLetter: string;
+
+  @Column({ nullable: true, type: 'text' })
+  experienceLetter: string;
+
+  @Column({ nullable: true, type: 'text' })
+  certificateLetter: string;
+
+  // ==================== ACCOUNT ACCESS ====================
+  @Column({ nullable: true })
+  slackId: string;
+
+  @Column({ nullable: true })
+  skypeId: string;
+
+  @Column({ nullable: true })
+  githubId: string;
+
+  // ==================== SYSTEM FIELDS ====================
   @Column()
   @Exclude()
   password: string;
@@ -51,21 +129,6 @@ export class User {
   @ManyToOne(() => Organization, { nullable: true, eager: false })
   @JoinColumn({ name: 'organizationId' })
   organization: Organization;
-
-  @Column({ nullable: true })
-  department: string;
-
-  @Column({ nullable: true })
-  designation: string;
-
-  @Column({ nullable: true })
-  reportingManagerId: string;
-
-  @Column({ nullable: true })
-  employmentType: string;
-
-  @Column({ nullable: true, type: 'date' })
-  dateOfJoining: Date;
 
   // Email Verification
   @Column({ default: false })

@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { ExampleModule } from './modules/example/example.module';
+import { EmployeeModule } from './modules/employee/employee.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -36,9 +37,10 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
     MailModule,
     AuditModule,
 
-// Feature modules
+    // Feature modules
     AuthModule,
     ExampleModule,
+    EmployeeModule,
   ],
   providers: [
     // Apply JWT guard globally (NFR-ADMIN-001: RBAC at API level)
@@ -63,4 +65,4 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
