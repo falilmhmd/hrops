@@ -370,24 +370,192 @@ Then system should display holidays for that location
 ### 4.1.7 Leave & Attendance Management
 
 #### FR-ADMIN-LEAVE-MGMT-001: Leave Approval
+**Priority:** Must Have (M)
+
+**User Story:**
+> As an Admin/Manager, I want to manage leave requests, so that employee leaves can be properly tracked and approved.
+
 Admin/Manager can:
-- Approve
-- Reject
+- Approve leave requests
+- Reject leave requests
 - Request modification
+
+**Leave Request Fields:**
+| Field | Type | Required |
+|-------|------|----------|
+| Leave Type | Select | Yes |
+| Start Date | Date | Yes |
+| End Date | Date | Yes |
+| Start Duration | Enum (Full Day/Half Day Morning/Half Day Afternoon) | No (default: Full Day) |
+| End Duration | Enum (Full Day/Half Day Morning/Half Day Afternoon) | No (default: Full Day) |
+| Number of Days | Number | Yes |
+| Reason | Text | Yes |
+| Attachment | URL | No |
+
+**Leave Request Status:**
+| Status | Description |
+|--------|-------------|
+| PENDING | Awaiting approval |
+| APPROVED | Approved by authorized approver |
+| REJECTED | Rejected by authorized approver |
+| CANCELLED | Cancelled by employee |
+| MODIFICATION_REQUESTED | Approver requested changes |
+
+**Acceptance Criteria:**
+
+Given I am logged in as HR Admin or Reporting Manager  
+When I view pending leave requests  
+Then system should display all pending requests for my approval
+
+Given I approve a leave request  
+Then system should:
+- Update leave request status to APPROVED
+- Deduct leave days from employee's balance
+- Record approver details and timestamp
+
+Given I reject a leave request  
+Then system should:
+- Update leave request status to REJECTED
+- Restore pending leave days to employee's balance
+- Record rejection reason and timestamp
+
+Given I request modification  
+Then system should:
+- Update leave request status to MODIFICATION_REQUESTED
+- Notify employee to make changes
+- Allow employee to update and resubmit
 
 **Business Rules:**
 | Rule ID | Description |
 |---------|-------------|
 | BR-LEAVE-004 | Leave deducted only after approval |
 | BR-LEAVE-005 | Rejected leave restores balance |
+| BR-LEAVE-006 | Only pending requests can be approved/rejected |
+| BR-LEAVE-007 | Reporting Manager can only approve their team members' requests |
+| BR-LEAVE-008 | HR Admin and Super Admin can approve any request |
+| BR-LEAVE-009 | Overlapping leave requests are not allowed |
+| BR-LEAVE-010 | LOP (Loss of Pay) has no balance restriction |
+
+**API Endpoints:**
+| Method | Endpoint | Description | Roles |
+|--------|----------|-------------|-------|
+| POST | `/leave-requests` | Create a new leave request | Employee, Manager, Admin |
+| GET | `/leave-requests` | Get all leave requests (admin view) | HR Admin, Super Admin |
+| GET | `/leave-requests/my-requests` | Get current user's leave requests | All authenticated users |
+| GET | `/leave-requests/my-balance` | Get current user's leave balance | All authenticated users |
+| GET | `/leave-requests/pending-approvals` | Get pending approvals for approver | Manager, HR Admin, Super Admin |
+| GET | `/leave-requests/:id` | Get leave request by ID | Owner, Manager, Admin |
+| PUT | `/leave-requests/:id` | Update leave request | Owner (pending/modification requested) |
+| PATCH | `/leave-requests/:id/approve` | Approve leave request | Manager, HR Admin, Super Admin |
+| PATCH | `/leave-requests/:id/reject` | Reject leave request | Manager, HR Admin, Super Admin |
+| PATCH | `/leave-requests/:id/request-modification` | Request modification | Manager, HR Admin, Super Admin |
+| PATCH | `/leave-requests/:id/cancel` | Cancel leave request | Owner (pending/modification requested) |
+| GET | `/leave-requests/user/:userId` | Get user's leave requests | HR Admin, Super Admin |
+| GET | `/leave-requests/user/:userId/balance` | Get user's leave balance | HR Admin, Super Admin |
 
 ---
 
 #### FR-ADMIN-ATT-001: Attendance Monitoring
+**Priority:** Must Have (M)
+
+**User Story:**
+> As an Admin/Manager, I want to monitor and manage attendance, so that employee attendance can be properly tracked and regularized.
+
 Admin can:
 - View attendance summary
 - Filter by department
 - Regularize attendance
+
+**Attendance Status Types:**
+| Status | Description |
+|--------|-------------|
+| PRESENT | Employee checked in on time |
+| ABSENT | Employee did not check in |
+| LATE | Employee checked in after grace period |
+| HALF_DAY | Employee worked less than 4 hours |
+| ON_LEAVE | Employee has approved leave |
+| HOLIDAY | Public/optional holiday |
+| WEEKEND | Saturday or Sunday |
+
+**Work Mode Types:**
+| Mode | Description |
+|------|-------------|
+| WFO | Work From Office |
+| WFH | Work From Home |
+| HYBRID | Mixed work mode |
+
+**Attendance Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| userId | UUID | Employee reference |
+| date | Date | Attendance date |
+| checkInTime | Timestamp | Check-in time |
+| checkOutTime | Timestamp | Check-out time |
+| checkInLocation | String | Check-in location name |
+| checkOutLocation | String | Check-out location name |
+| checkInLatitude | Float | GPS latitude |
+| checkInLongitude | Float | GPS longitude |
+| workMode | Enum | Work mode (WFO/WFH/HYBRID) |
+| status | Enum | Attendance status |
+| workingHours | Float | Total working hours |
+| overtimeHours | Float | Overtime hours |
+| isLate | Boolean | Late check-in flag |
+| lateByMinutes | Integer | Minutes late |
+| isEarlyCheckout | Boolean | Early checkout flag |
+| earlyCheckoutByMinutes | Integer | Minutes early |
+| isRegularized | Boolean | Regularization flag |
+| regularizationStatus | Enum | Regularization status |
+| regularizationReason | Text | Reason for regularization |
+| notes | Text | Additional notes |
+
+**Regularization Status:**
+| Status | Description |
+|--------|-------------|
+| PENDING | Awaiting approval |
+| APPROVED | Approved by admin |
+| REJECTED | Rejected by admin |
+
+**Acceptance Criteria:**
+
+Given I am logged in as HR Admin or Reporting Manager  
+When I view attendance summary  
+Then system should display attendance statistics for all employees
+
+Given I filter attendance by department  
+Then system should display attendance records for that department only
+
+Given I regularize an employee's attendance  
+Then system should:
+- Update the attendance record
+- Mark as regularized
+- Record the regularizer details and timestamp
+
+**Business Rules:**
+| Rule ID | Description |
+|---------|-------------|
+| BR-ATT-001 | Only one check-in per day per employee |
+| BR-ATT-002 | Late marking after 15-minute grace period |
+| BR-ATT-003 | Half-day if working hours < 4 |
+| BR-ATT-004 | Overtime calculated after 6 PM |
+| BR-ATT-005 | Cannot regularize future dates |
+| BR-ATT-006 | Reporting Manager can only regularize their team members |
+| BR-ATT-007 | HR Admin and Super Admin can regularize any employee |
+
+**API Endpoints:**
+| Method | Endpoint | Description | Roles |
+|--------|----------|-------------|-------|
+| POST | `/attendance/check-in` | Check in for today | All authenticated users |
+| POST | `/attendance/check-out` | Check out for today | All authenticated users |
+| GET | `/attendance/today` | Get today's attendance status | All authenticated users |
+| GET | `/attendance/my-history` | Get my attendance history | All authenticated users |
+| GET | `/attendance/:id` | Get attendance by ID | Owner, Manager, Admin |
+| GET | `/attendance` | Get all attendance records | HR Admin, Super Admin, Reporting Manager |
+| GET | `/attendance/summary/user` | Get user attendance summary | HR Admin, Super Admin, Reporting Manager |
+| GET | `/attendance/summary/department` | Get department attendance summary | HR Admin, Super Admin |
+| POST | `/attendance/regularize` | Regularize attendance | HR Admin, Super Admin, Reporting Manager |
+| GET | `/attendance/regularizations/pending` | Get pending regularizations | HR Admin, Super Admin |
+| PATCH | `/attendance/regularizations/:id/approve` | Approve regularization | HR Admin, Super Admin |
+| PATCH | `/attendance/regularizations/:id/reject` | Reject regularization | HR Admin, Super Admin |
 
 ---
 

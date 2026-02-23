@@ -7,6 +7,8 @@ import { AuditLog } from './entities/audit-log.entity';
 import { LeaveType } from './entities/leave-type.entity';
 import { LeaveBalance } from './entities/leave-balance.entity';
 import { Holiday } from './entities/holiday.entity';
+import { Attendance } from './entities/attendance.entity';
+import { LeaveRequest } from './entities/leave-request.entity';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { Holiday } from './entities/holiday.entity';
         username: configService.get<string>('DB_USERNAME', 'postgres'),
         password: configService.get<string>('DB_PASSWORD', 'postgres'),
         database: configService.get<string>('DB_NAME', 'hrms_db'),
-        entities: [User, Organization, AuditLog, LeaveType, LeaveBalance, Holiday],
+        entities: [User, Organization, AuditLog, LeaveType, LeaveBalance, Holiday, Attendance, LeaveRequest],
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
         logging: configService.get<string>('NODE_ENV') === 'development',
         ssl:
